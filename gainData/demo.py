@@ -3,8 +3,10 @@
 import re
 import csv
 import requests
+from pyquery import PyQuery as pq
 
-url = 'http://yss.mof.gov.cn/2019qgczjs/202007/t20200706_3544615.htm'
+url = "http://yss.mof.gov.cn/2018czjs/index.htm"
+
 headers = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
@@ -18,13 +20,18 @@ response = requests.get(url, headers=headers)
 response.encoding = "utf-8"
 
 content = response.text
+doc = pq(content)
 
 """
-<p align="justify">　　（2）中央政府国外债务发行费用支出预算数为0.52亿元，决算数为0.52亿元，完成预算的100%。</p>
+<a href="./201907/t20190718_3303107.htm" target="_blank">2018年全国一般公共预算收入决算表National General Public Budget Revenue</a>
 """
-match_pattern = '<p align="justify">(.*?)</p>'
 
-results = re.findall(match_pattern, str(content), re.S)
+pattern = '<a href="./(.*?)" target="_blank">(.*?)</a>'
 
-for result in results:
-    print(result)
+content_str = str(doc("td"))
+
+content_list = re.findall(pattern, str(content), re.S)
+
+print(len(content_list))
+for line in content_list:
+    print(line[0], line[1])
