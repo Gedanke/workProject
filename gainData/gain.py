@@ -4,7 +4,8 @@ import re
 import csv
 import requests
 
-url = 'http://yss.mof.gov.cn/2019qgczjs/202007/t20200706_3544615.htm'
+# url = 'http://yss.mof.gov.cn/2018czjs/index.htm'
+url = 'http://yss.mof.gov.cn/2012zhongyangyusuan/'
 headers = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
@@ -20,11 +21,12 @@ response.encoding = "utf-8"
 content = response.text
 
 """
-<p align="justify">　　（2）中央政府国外债务发行费用支出预算数为0.52亿元，决算数为0.52亿元，完成预算的100%。</p>
+<a href="./201907/t20190718_3303107.htm" target="_blank">2018年全国一般公共预算收入决算表National General Public Budget Revenue</a>
 """
-match_pattern = '<p align="justify">(.*?)</p>'
+match_pattern = '<a href=".(/2.*?)".*?target="_blank".*?>(.*?)</a>'
 
 results = re.findall(match_pattern, str(content), re.S)
 
 for result in results:
     print(result)
+print(len(results))
