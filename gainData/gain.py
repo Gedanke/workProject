@@ -26,7 +26,12 @@ content = response.text
 match_pattern = '<a href=".(/2.*?)".*?target="_blank".*?>(.*?)</a>'
 
 results = re.findall(match_pattern, str(content), re.S)
+#
+# for result in results:
+#     print(result)
+# print(len(results))
+d = "• 广州南联航空食品有限公司调整10kV电增容进线电缆及配套电柜项目中标候选人公示 2021-01-28"
+# print(d.split(" "))
+import random
 
-for result in results:
-    print(result)
-print(len(results))
+print(random.randint(0, 100) / 200)
