@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import re
+import pandas
 import time
 import json
 import random
@@ -8,7 +9,10 @@ from pyquery import PyQuery
 import requests
 
 '''以中标公告为例'''
+'''
 root_url = "https://csbidding.csair.com/cms/channel/bidzbgg/index.htm?pageNo="
+'''
+root_url = "https://csbidding.csair.com/cms/channel/zbgg/index.htm?pageNo="
 url_dict = dict()
 url_file = "url.json"
 
@@ -46,7 +50,7 @@ def gain_urls(page_num: int):
             '''构造url对应的公告名称'''
             if str(i.text()).find(" ") != -1:
                 name_list = str(i.text()).split(" ")
-                name = name_list[1] + ":" + name_list[2]
+                name = name_list[0]
                 '''存放到字典里'''
                 url_dict[name] = url
     '''写入 json 文件中'''
@@ -74,15 +78,41 @@ def gain_data(url_name: str):
     files.close()
 
 
+def gain_data_plus(url_name: str):
+    """
+
+    :param url_name:
+    :return:
+    """
+    url = url_dict[url_name]
+    file = "data_/" + url_name + ".txt"
+    response = requests.get(url, headers=headers)
+    content = str(response.text)
+    table_list = pandas.read_html(url)
+    for index in range(len(table_list)):
+        print(table_list[index])
+        table_list[index].to_csv("data_/" + url_name + "_" + str(index + 1) + ".csv", index=False)
+    '''公告内容存放在 main-text class 节点下'''
+    p = PyQuery(content)(".main-text")
+    files = open(file, "w")
+    for i in p.items():
+        '''获取其文本内容，写入文本文件'''
+        print(i.text())
+        files.write(i.text())
+    files.close()
+
+
 if __name__ == '__main__':
     """"""
     '''待爬的页面数'''
     page_num = 114
     '''鉴于需要的链接都已经保存到json文件了，gain_urls 运行一次就可以了'''
-    gain_urls(page_num=1)
+    # gain_urls(page_num=1)
     with open(url_file, 'r') as f:
         url_dict = json.load(f)
-    for url_name, url in url_dict.items():
-        '''随机休眠，防止请求过于频繁'''
-        t = random.randint(0, 100) / 200
-        gain_data(url_name)
+    # print(url_dict)
+    # for url_name, url in url_dict.items():
+    #     '''随机休眠，防止请求过于频繁'''
+    #     t = random.randint(0, 100) / 200
+    #     gain_data(url_name)
+    gain_data_plus("南航机务工程部2020年度机上纺织品（机组及VIP物品等）采购项目招标公告")
