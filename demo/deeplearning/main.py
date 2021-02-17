@@ -9,12 +9,26 @@ rmvirtualenv venvdl
 wget https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnvinfer7_7.1.3-1+cuda11.0_amd64.deb
 """
 
-import tensorflow as tf
+from selenium import webdriver
+from selenium.webdriver import ChromeOptions
 
-print(tf.add(1, 2))
-print(tf.add([1, 2], [3, 4]))
-print(tf.square(5))
-print(tf.reduce_sum([1, 2, 3]))
+option = ChromeOptions()
+option.add_argument("--disable-blink-features=AutomationControlled")
+option.add_experimental_option('excludeSwitches', ['enable-automation'])
+option.add_experimental_option('useAutomationExtension', False)
+# option.add_argument('--headless')
+browser = webdriver.Chrome(options=option)
+browser.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
+    'source': 'Object.defineProperty(navigator,  "webdriver",  {get:  ()  =>  undefined})'
+})
+headers = {
+    'Accept-Encoding': 'gzip, deflate, sdch',
+    'Accept-Language': 'en-US,en;q=0.8',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Referer': 'http://www.wikipedia.org/',
+    'Connection': 'keep-alive',
+}
 
-# Operator overloading is also supported
-print(tf.square(2) + tf.square(3))
+browser.get('https://bot.sannysoft.com/')
+print(browser.page_source)
