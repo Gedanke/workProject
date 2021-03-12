@@ -15,17 +15,19 @@ chrome_options.add_argument(
 
 driver = Chrome('chromedriver', options=chrome_options)
 driver.set_window_size(1366, 768)
-with open('/home/dfs/repository/py/stealth.min.js-main/stealth.min.js') as f:
+with open('stealth.min.js') as f:
     js = f.read()
 
 driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
     "source": js
 })
 # driver.get('https://www.zbytb.com/s-jian-136965.html')
-driver.get('https://bot.sannysoft.com/')
+url = "https://www.crunchbase.com/"
+# driver.get('https://bot.sannysoft.com/')
+driver.get(url)
+
 
 # 你可以保存源代码为 html 再双击打开，查看完整结果 https://bot.sannysoft.com/
 source = driver.page_source
-print(source)
 with open('result.html', 'w') as f:
     f.write(source)
